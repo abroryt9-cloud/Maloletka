@@ -7,155 +7,177 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
         
         :root {
+            --dark: #0a0f1f;
+            --deep-blue: #0f182e;
             --neon-pink: #ff00cc;
             --neon-cyan: #00f7ff;
         }
         
-        * { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            background: #0a0a1f;
+            background: var(--dark);
+            color: white;
             overflow-x: hidden;
         }
         
         .title-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* АДАПТИВНЫЙ ГЕРОЙ С ТВОИМ ФОНОМ */
         .hero-bg {
-            background: linear-gradient(rgba(10,10,30,0.7), rgba(30,5,50,0.85)), 
+            background: linear-gradient(rgba(10,15,35,0.88), rgba(15,10,50,0.95)), 
                         url('https://i.ibb.co/0jK0z0K/grand-mobile-promo.jpg') center/cover no-repeat fixed;
             min-height: 100vh;
-            animation: slowDrift 60s linear infinite;
+            animation: slowDrift 110s linear infinite;
         }
 
         @keyframes slowDrift {
-            0% { background-position: 30% 50%; }
-            100% { background-position: 70% 50%; }
+            0% { background-position: 25% 50%; }
+            100% { background-position: 75% 50%; }
         }
 
-        /* БЕСКОНЕЧНЫЕ 3D ОБЪЕКТЫ ИЗ ИГРЫ (машины, пальмы, звёзды) */
         .floating-object {
             position: absolute;
-            font-size: 4rem;
-            opacity: 0.25;
+            opacity: 0.3;
             pointer-events: none;
             animation: float3D linear infinite;
-            filter: drop-shadow(0 0 30px #ff00cc);
+            z-index: 1;
         }
 
         @keyframes float3D {
-            0%   { transform: translateY(100vh) rotate(0deg) scale(0.8); }
-            100% { transform: translateY(-100px) rotate(360deg) scale(1.2); }
+            0% { transform: translateY(120vh) rotate(0deg) scale(0.7); }
+            100% { transform: translateY(-200px) rotate(1080deg) scale(1.4); }
         }
 
-        /* 3D КАРТОЧКИ УСЛУГ (наведение — поворот в пространстве) */
         .service-card {
-            perspective: 1800px;
+            perspective: 2000px;
         }
-        
         .service-card-inner {
-            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
             transform-style: preserve-3d;
+            background: rgba(15, 24, 50, 0.97);
+            border: 1px solid rgba(0, 247, 255, 0.25);
         }
-        
         .service-card:hover .service-card-inner {
-            transform: rotateY(22deg) rotateX(15deg) translateZ(40px) scale(1.08);
+            transform: rotateY(25deg) rotateX(18deg) translateZ(80px);
+            box-shadow: 0 0 90px 30px rgba(255, 0, 204, 0.45);
         }
 
-        .neon-glow {
-            text-shadow: 0 0 25px #ff00cc,
-                         0 0 50px #00f7ff;
+        .neon-text {
+            text-shadow: 0 0 30px #ff00cc, 0 0 60px #00f7ff;
+        }
+
+        /* 3D ЗАГРУЗКА ПРИ ВХОДЕ */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--dark);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 1.2s ease;
+        }
+        
+        .loader-3d {
+            width: 120px;
+            height: 120px;
+            border: 6px solid rgba(0, 247, 255, 0.2);
+            border-top: 6px solid #00f7ff;
+            border-radius: 50%;
+            animation: spin3D 1.2s linear infinite;
+            box-shadow: 0 0 40px #00f7ff;
+        }
+        
+        @keyframes spin3D {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="text-white">
+<body>
 
-    <!-- NAVBAR (полностью адаптивная) -->
-    <nav class="bg-black/90 backdrop-blur-xl border-b border-pink-500/30 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="text-4xl font-bold tracking-tighter bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent">MALOLETKI</div>
-                <span class="hidden sm:inline text-xs bg-white/10 px-4 py-2 rounded-3xl">GRAND MOBILE SERVICES</span>
+    <!-- 3D ЗАГРУЗКА ПРИ ВХОДЕ -->
+    <div id="loader">
+        <div class="loader-3d"></div>
+        <p class="mt-8 text-3xl title-font tracking-widest neon-text">ПРИВЕТСТВУЮ</p>
+        <p class="text-cyan-300 text-sm mt-2">Загрузка Maloletki...</p>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="bg-black/90 backdrop-blur-2xl sticky top-0 z-50 border-b border-cyan-500/30">
+        <div class="max-w-7xl mx-auto px-5 py-6 flex justify-between items-center">
+            <div class="title-font text-4xl md:text-5xl font-bold tracking-[-2px] bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+                MALOLETKI
             </div>
-            
-            <a href="https://t.me/mestny_strax" target="_blank"
-               class="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-bold px-6 py-3 rounded-3xl text-sm sm:text-base">
+            <a href="https://t.me/mestny_strax" target="_blank" 
+               class="flex items-center gap-3 bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-bold px-7 py-4 rounded-3xl">
                 <i class="fab fa-telegram-plane"></i>
                 <span class="hidden sm:inline">@mestny_strax</span>
             </a>
         </div>
     </nav>
 
-    <!-- HERO С МНОЖЕСТВОМ ДВИЖУЩИХСЯ 3D ОБЪЕКТОВ -->
+    <!-- HERO -->
     <section class="hero-bg relative flex items-center min-h-screen">
-        <!-- МНОГО ПЛАВАЮЩИХ 3D ЭЛЕМЕНТОВ ИЗ ИГРЫ -->
-        <div class="floating-object text-7xl" style="left: 8%; animation-duration: 35s; animation-delay: 0s;">🏎️</div>
-        <div class="floating-object text-6xl" style="left: 18%; animation-duration: 48s; animation-delay: 4s;">🚗</div>
-        <div class="floating-object text-5xl" style="left: 28%; animation-duration: 42s; animation-delay: 12s;">🌴</div>
-        <div class="floating-object text-7xl" style="left: 45%; animation-duration: 55s; animation-delay: 2s;">⭐</div>
-        <div class="floating-object text-6xl" style="left: 65%; animation-duration: 38s; animation-delay: 18s;">🏎️</div>
-        <div class="floating-object text-5xl" style="left: 75%; animation-duration: 50s; animation-delay: 9s;">🎮</div>
-        <div class="floating-object text-7xl" style="left: 85%; animation-duration: 45s; animation-delay: 25s;">🌴</div>
-        <div class="floating-object text-6xl" style="left: 12%; animation-duration: 60s; animation-delay: 15s; top: 30%;">🚓</div>
-        <div class="floating-object text-5xl" style="right: 15%; animation-duration: 40s; animation-delay: 30s;">💎</div>
+        <!-- Плавающие 3D объекты -->
+        <div class="floating-object text-7xl" style="left:8%; animation-duration:42s;">🏎️</div>
+        <div class="floating-object text-6xl" style="left:22%; animation-duration:55s; animation-delay:6s;">🌴</div>
+        <div class="floating-object text-5xl" style="left:35%; animation-duration:48s; animation-delay:14s;">⭐</div>
+        <div class="floating-object text-7xl" style="left:50%; animation-duration:60s;">🚗</div>
+        <div class="floating-object text-6xl" style="left:70%; animation-duration:45s; animation-delay:10s;">🌴</div>
+        <div class="floating-object text-5xl" style="left:82%; animation-duration:52s; animation-delay:22s;">💎</div>
 
-        <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
-            <div class="inline-flex items-center gap-3 bg-black/60 backdrop-blur-3xl px-8 py-4 rounded-3xl mb-10 border border-pink-400/50">
-                <div class="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
-                УСЛУГИ ДЛЯ GRAND MOBILE • 2026
+        <div class="max-w-7xl mx-auto px-6 text-center relative z-10 py-24 md:py-32">
+            <div class="inline-flex bg-black/60 backdrop-blur-2xl px-10 py-4 rounded-3xl mb-10 border border-cyan-400/40">
+                <span class="text-2xl font-bold tracking-widest neon-text">УСЛУГИ</span>
             </div>
             
-            <h1 class="text-6xl sm:text-7xl md:text-8xl title-font font-bold neon-glow leading-none tracking-[-3px]">
-                УСЛУГИ<br>ОТ MALOLETKI
+            <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl title-font font-bold neon-text leading-none tracking-[-4px]">
+                ОТ MALOLETKI
             </h1>
-            <p class="mt-6 text-xl sm:text-2xl text-white/90 max-w-2xl mx-auto">
-                DFF • SB • HUD • Приватка • Монтаж видео<br>
-                Всё быстро и качественно
+            
+            <p class="mt-8 text-xl md:text-2xl text-cyan-100 max-w-2xl mx-auto">
+                DFF • SB • HUD • Приватка • Монтаж видео
             </p>
             
-            <a href="https://t.me/mestny_strax?text=Привет%20Maloletki!%20Хочу%20услуги%20по%20Grand%20Mobile" target="_blank"
-               class="mt-12 inline-flex items-center gap-4 bg-white text-black px-10 py-6 rounded-3xl text-2xl font-bold hover:scale-110 shadow-2xl">
-                <i class="fab fa-telegram-plane text-3xl"></i>
-                ЗАКАЗАТЬ В TELEGRAM
+            <a href="https://t.me/mestny_strax" target="_blank"
+               class="mt-14 inline-block bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-bold px-14 py-7 rounded-3xl text-2xl md:text-3xl hover:scale-105">
+                Написать в Telegram
             </a>
         </div>
     </section>
 
-    <!-- УСЛУГИ – АДАПТИВНАЯ СЕТКА С 3D КАРТОЧКАМИ -->
-    <section class="max-w-7xl mx-auto px-6 py-20">
-        <h2 class="text-5xl sm:text-6xl title-font font-bold text-center neon-glow mb-4">Наши услуги</h2>
-        <p class="text-center text-gray-300 text-lg sm:text-xl mb-16">Цены в звёздах • Оплата Grand Donat</p>
+    <!-- УСЛУГИ -->
+    <section class="max-w-7xl mx-auto px-6 py-20 bg-[#0a1328]">
+        <h2 class="text-4xl md:text-6xl title-font font-bold text-center neon-text mb-6">Наши услуги</h2>
+        <p class="text-center text-cyan-200 text-lg md:text-xl mb-16">Цены в звёздах • Оплата Grand Donat</p>
         
-        <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
             <!-- JS заполнит -->
         </div>
     </section>
 
-    <!-- ИНФО -->
-    <div class="bg-gradient-to-br from-pink-900/30 to-cyan-900/30 py-16">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h3 class="text-4xl font-bold mb-6">Где купить?</h3>
-            <a href="https://t.me/mestny_strax" target="_blank" 
-               class="inline-flex items-center gap-4 text-4xl font-bold bg-black px-12 py-7 rounded-3xl hover:scale-105">
-                <i class="fab fa-telegram-plane"></i> @mestny_strax
-            </a>
-            <div class="mt-10 text-red-400 text-xl">⚠️ Спам = ЧС</div>
-            <div class="text-xl mt-3">🔴 Оплата только Grand Donat</div>
-        </div>
+    <!-- Нижний блок -->
+    <div class="py-20 bg-black/80 text-center">
+        <h3 class="text-3xl md:text-4xl font-bold mb-8">Где купить услуги?</h3>
+        <a href="https://t.me/mestny_strax" target="_blank" 
+           class="inline-flex items-center gap-4 text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 text-black px-14 py-8 rounded-3xl">
+            <i class="fab fa-telegram-plane"></i>
+            @mestny_strax
+        </a>
+        <p class="mt-10 text-red-400 text-xl">⚠️ Спам = ЧС</p>
+        <p class="text-xl mt-3">🔴 Оплата только Grand Donat</p>
     </div>
 
     <script>
-        // Услуги
-        let services = [
+        const services = [
             {name: "Сделаю DFF / SB", price: 15, desc: "Готовый DFF или SB под ключ"},
             {name: "Сделаю HUD", price: 15, desc: "Красивый интерфейс"},
-            {name: "Любая SB под вкус", price: 15, desc: "Индивидуальная сборка"},
-            {name: "Научу делать свой DFF/SB", price: 25, desc: "Полный урок"},
-            {name: "Научу делать HUD", price: 15, desc: "Урок по интерфейсу"},
+            {name: "Любая SB под вкус", price: 15, desc: "Сделаю сборку именно для тебя"},
+            {name: "Научу делать свой DFF/SB", price: 25, desc: "Полный урок + файлы"},
+            {name: "Научу делать HUD", price: 15, desc: "Урок по созданию интерфейса"},
             {name: "Научу SB без скинпака", price: 15, desc: "Чистая сборка"},
             {name: "Вход в приватку", price: 25, desc: "Доступ в закрытый сервер"},
             {name: "Смонтирую видео", price: 15, desc: "Профессиональный монтаж"}
@@ -163,38 +185,38 @@
 
         function renderServices() {
             const grid = document.getElementById('services-grid');
-            grid.innerHTML = '';
-            
-            services.forEach(service => {
-                const cardHTML = `
+            grid.innerHTML = services.map(s => `
                 <div class="service-card group">
-                    <div class="service-card-inner bg-zinc-900 border border-pink-500/30 rounded-3xl p-8 h-full flex flex-col">
+                    <div class="service-card-inner rounded-3xl p-8 h-full flex flex-col">
                         <div class="flex justify-between mb-8">
-                            <div class="text-6xl">⭐</div>
+                            <span class="text-6xl">⭐</span>
                             <div class="text-right">
-                                <span class="block text-5xl font-bold text-pink-400">${service.price}</span>
-                                <span class="text-lg text-white/60">звёзд</span>
+                                <span class="text-5xl font-bold text-cyan-400">${s.price}</span>
+                                <span class="block text-white/70">звёзд</span>
                             </div>
                         </div>
-                        <h3 class="text-2xl font-semibold mb-3">${service.name}</h3>
-                        <p class="text-gray-400 flex-1">${service.desc}</p>
-                        <a href="https://t.me/mestny_strax?text=Хочу%20\( {encodeURIComponent(service.name)}%20за%20 \){service.price}%20звёзд" 
+                        <h3 class="text-2xl font-semibold mb-3">${s.name}</h3>
+                        <p class="text-gray-300 flex-1">${s.desc}</p>
+                        
+                        <a href="https://t.me/mestny_strax?text=Приветствую,%20я%20хочу%20купить%20у%20вас%20услугу%20\( {encodeURIComponent(s.name)}%20за%20 \){s.price}%20звёзд" 
                            target="_blank"
-                           class="mt-8 block text-center py-5 bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-bold rounded-3xl text-xl hover:brightness-110">
-                            ЗАКАЗАТЬ
+                           class="mt-10 block text-center py-6 bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-bold rounded-3xl text-xl hover:brightness-110">
+                            ЗАКАЗАТЬ В ТГ
                         </a>
                     </div>
-                </div>`;
-                grid.innerHTML += cardHTML;
-            });
+                </div>
+            `).join('');
         }
 
-        // Инициализация
+        // Убираем загрузку после 2.2 секунды
         window.onload = () => {
             renderServices();
             
-            // Сообщение в консоль
-            console.log('%c✅ Сайт Maloletki полностью адаптирован под мобильные и ПК. Добавлены множественные 3D-анимации движущихся объектов на фоне (машины, пальмы, звёзды).', 'color:#ff00cc; font-size:16px;');
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 1200);
+            }, 2200);
         };
     </script>
 </body>
